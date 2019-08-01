@@ -5,22 +5,29 @@
   "main": "index.js",
   "private": true,
   "dependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1",
+    "@material-ui/core": "^4.3.0",
+    "@material-ui/icons": "^4.2.1",
+    "@material-ui/styles": "^4.3.0",
     "argon2": "^0.24.0",
+    "axios": "^0.19.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "massive": "^5.11.2",
     "node-pg-migrate": "^3.21.1",
-    "pg": "^7.12.0"
+    "pg": "^7.12.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "3.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "migrate": "node-pg-migrate"
+    "migrate": "node-pg-migrate",
+    "api-server": "nodemon /server/index.js",
+    "dock:start": "docker-compose up -d db",
+    "dock:down": "docker-compose down"
   },
   "repository": {
     "type": "git",
