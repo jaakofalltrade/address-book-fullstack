@@ -1,0 +1,44 @@
+{
+  "name": "address-book-fullstack",
+  "version": "0.1.0",
+  "description": "For this project you'll be crafting an Address Book application. You'll be responsible for the user interface and its functionality, along with implementing a backend API to persist the data to a database and authorize users.",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "3.0.1",
+    "argon2": "^0.24.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "massive": "^5.11.2",
+    "node-pg-migrate": "^3.21.1",
+    "pg": "^7.12.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "migrate": "node-pg-migrate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaakofalltrade/address-book-fullstack.git"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
