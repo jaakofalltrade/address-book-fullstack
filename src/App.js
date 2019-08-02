@@ -10,6 +10,7 @@ import axios from 'axios';
 import Login from './components/login';
 import SignUp from './components/signup';
 import Head from './components/head';
+import Main from './components/main';
 
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -125,10 +126,14 @@ class App extends Component {
     }
   }
 
+  login = () => {
+    
+  }
+
   render() {
     const { classes } = this.props;
-    return (
-      <HashRouter>
+    const RealPage = () => {
+      return (
         <div className={classes.back}>
           <Box style={{
             position:'relative',
@@ -141,6 +146,7 @@ class App extends Component {
             {
               this.state.toggleView ? (
                 <Login
+                  login={this.login}
                   design={classes}
                   handleUsername={this.handleUsername}
                   handlePassword={this.handlePassword}
@@ -162,6 +168,13 @@ class App extends Component {
             }
           </Box>
         </div>
+      )
+    }
+    return (
+      <HashRouter>
+        <Switch>
+          <Route exact component={RealPage} path="/" />
+        </Switch>
       </HashRouter>
     );
   }
