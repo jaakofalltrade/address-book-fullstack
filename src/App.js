@@ -1,19 +1,26 @@
 import React, { Component } from 'react';
 
-import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import { withStyles } from '@material-ui/styles';
-import Button from '@material-ui/core/Button';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
-import PersonAdd from '@material-ui/icons/PersonAdd';
-import HowToReg from '@material-ui/icons/HowToReg';
 
 import { HashRouter, Route, Switch } from 'react-router-dom';
+import axios from 'axios';
 
 //Components
 import Login from './components/login';
 import SignUp from './components/signup';
+import Head from './components/head';
+
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+toast.configure({
+    position: "top-right",
+    autoClose: 5000,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+})
 
 const styles = {
   back: {
@@ -31,11 +38,13 @@ const styles = {
     flexDirection: 'column',
     textAlign: 'center',
     width: '300px',
-    minHeight: '300px',
+    minHeight: '290px',
     paddingBottom: '10px',
     height: 'auto',
+    transition: 'height 0.5s',
   },
   formBox: {
+    marginTop: '-20px',
     display: 'flex',
     justifyContent: 'center',
     flexDirection: 'column',
@@ -43,6 +52,10 @@ const styles = {
   inputArea: {
     width: '90%',
     marginBottom: '30px',
+  },
+  textBuffer: {
+    paddingBottom: '5px',
+    width: '100%',
   }
 };
 
@@ -56,12 +69,6 @@ class App extends Component {
       confirmPass: "",
       toggleView: true,
     }
-  }
-
-  handleChange = (e) => {
-    this.setState({
-      tabs: e,
-    })
   }
 
   handleUsername = (e) => {
@@ -91,6 +98,24 @@ class App extends Component {
     })
   }
 
+  toastNotif = (e) => {
+    toast(e);
+  }
+
+  signUp = () => {
+    if(this.state.password !== this.state.confirmPass) {
+      this.toastNotif('Passwords does not match!')
+    } else {
+      axios.post('http://localhost:3002/api/user', {
+        username: this.state.username,
+        password: this.state.password
+      })
+      .then((response) => {
+        console.log(response);
+      });
+    }
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -100,24 +125,10 @@ class App extends Component {
             position:'relative',
             top: '30px',
           }}>
-            <Box style={{
-              position: 'relative',
-              height: '50px',
-              width: '300px',
-              marginBottom: '5px',
-            }}>
-              <Tooltip title={this.state.toggleView ? "No Account? Sign Up now!" : "Already have an account? Sign In now!"}>
-                <IconButton onClick={this.handleToggleView}>
-                  {
-                    this.state.toggleView ? (
-                      <PersonAdd style={{fontSize: '30px'}} />
-                    ) : (
-                      <HowToReg style={{fontSize: '30px'}} />
-                    )
-                  }
-                </IconButton>
-              </Tooltip>
-            </Box>
+            <Head
+              toggleView={this.state.toggleView} 
+              handleToggleView={this.handleToggleView}
+            />
             {
               this.state.toggleView ? (
                 <Login
@@ -129,6 +140,7 @@ class App extends Component {
                 />
               ) : (
                 <SignUp
+                  signUp={this.signUp}
                   design={classes}
                   handleUsername={this.handleUsername}
                   handlePassword={this.handlePassword}

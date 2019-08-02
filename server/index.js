@@ -1,5 +1,6 @@
 const express = require('express');
 const massive = require('massive');
+const cors = require('cors');
 
 const endpoint = require('./controllers/endpoints.js');
 
@@ -16,6 +17,7 @@ massive({
 
 	//Middlewares
 	app.use(express.json());
+	app.use(cors());
 	app.use(endpoint.tokenizer);
 
 	//Routes

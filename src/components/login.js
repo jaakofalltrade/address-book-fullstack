@@ -16,7 +16,7 @@ export default class Login extends Component {
             username, 
             password, 
             handleUsername,
-            handlePassword
+            handlePassword,
          } = this.props;
         return (
             <Paper className={design.loginBox}>
@@ -31,28 +31,32 @@ export default class Login extends Component {
                 </Box>
                 <Box className={design.formBox}>
                     <form>
-                        <TextField
-                            className={design.inputArea}
-                            required
-                            type="text"
-                            label="Username"
-                            value={username}
-                            onChange={e => {
-                                handleUsername(e.target.value)
-                            }}
-                            helperText="Some important text"
-                        />
-                        <TextField
-                            className={design.inputArea}
-                            required
-                            type="password"
-                            label="Password"
-                            value={password}
-                            onChange={e => {
-                                handlePassword(e.target.value)
-                            }}
-                            helperText="Some important text"
-                        />
+                        <div className={design.textBuffer}>
+                            <TextField
+                                className={design.inputArea}
+                                required
+                                type="text"
+                                label="Username"
+                                value={username}
+                                onChange={e => {
+                                    handleUsername(e.target.value)
+                                }}
+                                helperText="Required"
+                            />
+                        </div>
+                        <div className={design.textBuffer}>
+                            <TextField
+                                className={design.inputArea}
+                                required
+                                type="password"
+                                label="Password"
+                                value={password}
+                                onChange={e => {
+                                    handlePassword(e.target.value)
+                                }}
+                                helperText="Required"
+                            />
+                        </div>
                         <Button
                             type="submit"
                             variant="outlined" 
