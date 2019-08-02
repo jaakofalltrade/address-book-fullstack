@@ -11,8 +11,7 @@ function createUser(req, res) {
 	})
 	.then(user => {
 		if(user) {
-			throw new Error('Username already taken!');
-      		res.status(500).end();
+      		res.status(200).json({message: "Username already taken", result: false});
 		} else {
 			argon2.hash(password)
 			.then(hash => {
@@ -26,7 +25,7 @@ function createUser(req, res) {
 			})
 			.then(data => {
 				const token = jwt.sign({ userId: data.id }, secret);
-        		res.status(201).json({ ...data, token });
+        		res.status(201).json({ ...data, token, message: "You have successfully signed up!", result: true });
         		console.log('[+] Inserting: Successful!');
 			}).catch(err => {
 				res.status(500).end();
@@ -51,19 +50,19 @@ function login(req, res) {
 	})
 	.then(user => {
 		if(!user) {
-			res.status(500).end();
+			res.status(200).json({message: "Username/Password do not match", result: false});
 			console.log('[+] User does not exist.');
 		}
 		return argon2.verify(user.password, password)
 		.then(valid => {
 			if(!valid) {
-				res.status(500).end();
+				res.status(200).json({message: "Username/Password do not match", result: false});
 				console.log('[+] Wrong Password.');
 			}
 			const token = jwt.sign({ userId: user.id }, secret);
 			delete user.password;
 			console.log('[+] Login: Successful!');
-			res.status(200).json({ ...user, token });
+			res.status(200).json({ ...user, token, message: "Logged In!", result: true });
 		});
 	}).catch(err => {
 		console.log(err);
@@ -110,7 +109,7 @@ function createContact(req, res) {
 	})
 	.then(contact => {
 		console.log(`[+] Create Contacts: Successful!`)
-		res.status(200).json(contact);
+		res.status(200).json({contact, message: "Contact added!", result: true});
 	})
 	.catch(err => {
 		console.log(err);
@@ -139,7 +138,7 @@ function getContacts(req, res) {
 					conts.push(data);
 					if(count === result.length) {
 						console.log(`[+] Contacts: Successfully queried with user id: ${user}`)
-						res.status(200).json(conts);
+						res.status(200).json({conts, message: "Contacts Queried", result: true});
 					}
 				});
 			});
@@ -167,7 +166,7 @@ function getContactbyId(req, res) {
 	.then(data => {
 		if(data) {
 			console.log(`[+] Contact: Successfully queried with id: ${contact}`)
-			res.status(200).json(data);
+			res.status(200).json({data, message: "Contact Queried", result: true});
 		} else {
 			console.log(`[+] Contact: Failed Query with id: ${contact}`)
 			res.status(204).end()

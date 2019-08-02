@@ -111,8 +111,17 @@ class App extends Component {
         password: this.state.password
       })
       .then((response) => {
-        console.log(response);
-      });
+        console.log(response)
+        if(response.data.result) {
+          this.toastNotif(response.data.message);
+          this.handleToggleView();
+        } else {
+          this.toastNotif(response.data.message);
+        }
+      })
+      .catch(err => {
+        this.toastNotif('Oops this is embarassing, something went wrong!')
+      })
     }
   }
 
