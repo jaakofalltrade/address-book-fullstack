@@ -18,7 +18,7 @@ import * as ls from 'local-storage';
 
 toast.configure({
     position: "top-right",
-    autoClose: 3000,
+    autoClose: 2000,
     closeOnClick: true,
     draggable: true,
 })
@@ -183,6 +183,15 @@ class App extends Component {
     }
   }
 
+  logout = () => {
+    this.setState({
+      loggedIn: false,
+      token: ""
+    })
+    ls.clear();
+    this.toastNotif('Successfully Logged Out!');
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -214,10 +223,20 @@ class App extends Component {
       )
     }
 
+    const MainPage = () => {
+      return (
+        <Main 
+          loggedIn={this.state.loggedIn}
+          token={this.state.token}
+          logout={this.logout}
+        />
+      )
+    }
+
     return (
       <HashRouter>
         <Switch>
-          <Route exact render={ this.state.loggedIn ? Main : RealPage } path="/" />
+          <Route exact render={ this.state.loggedIn ? MainPage : RealPage } path="/" />
         </Switch>
       </HashRouter>
     );
