@@ -6,12 +6,10 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
 export default class Login extends Component {
-    constructor() {
-        super();
-    }
 
     render() {
         const { 
+            login,
             design, 
             username, 
             password, 
@@ -27,10 +25,11 @@ export default class Login extends Component {
                             height: 'auto',
                             width: '50%'
                         }}
+                        alt="This is a description of the."
                     />
                 </Box>
                 <Box className={design.formBox}>
-                    <form>
+                    <form onSubmit={e => login(e)}>
                         <div className={design.textBuffer}>
                             <TextField
                                 className={design.inputArea}

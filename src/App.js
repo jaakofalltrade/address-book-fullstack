@@ -1,25 +1,25 @@
 import React, { Component } from 'react';
-
-import Box from '@material-ui/core/Box';
 import { withStyles } from '@material-ui/styles';
 
-import { HashRouter, Route, Switch } from 'react-router-dom';
+import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 import axios from 'axios';
 
-//Components
-import Login from './components/login';
-import SignUp from './components/signup';
-import Head from './components/head';
-import Main from './components/main';
+import './App.css'
+
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import PageBox from './components/pageBox';
+
+import Main from './components/main';
+
+import * as ls from 'local-storage';
 
 toast.configure({
     position: "top-right",
-    autoClose: 5000,
+    autoClose: 3000,
     closeOnClick: true,
-    pauseOnHover: true,
     draggable: true,
 })
 
@@ -29,9 +29,10 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: '#b8d6ff',
-    height: '100%',
+    height: 'auto',
     width: '100%',
     position: 'absolute',
+    paddingBottom: '30px',
   },
   loginBox: {
     position: 'relative',
@@ -42,7 +43,6 @@ const styles = {
     minHeight: '290px',
     paddingBottom: '10px',
     height: 'auto',
-    transition: 'height 0.5s',
   },
   formBox: {
     marginTop: '-20px',
@@ -69,6 +69,19 @@ class App extends Component {
       password: "",
       confirmPass: "",
       toggleView: true,
+      token: "",
+      loggedIn: false,
+      loading: false,
+    }
+  }
+
+  componentDidMount() {
+    const key = ls.get('userKey');
+    if(key) {
+      this.setState({
+        loggedIn: true,
+        token: key,
+      })
     }
   }
 
@@ -106,74 +119,105 @@ class App extends Component {
   signUp = () => {
     if(this.state.password !== this.state.confirmPass) {
       this.toastNotif('Passwords does not match!')
+    } else if(this.state.password === "" || this.state.username === "" || this.confirmPass === "") {
+      this.toastNotif('Naughty naughty!');
     } else {
+      this.setState({
+        loading: true,
+      })
       axios.post('http://localhost:3002/api/user', {
         username: this.state.username,
         password: this.state.password
       })
       .then((response) => {
-        console.log(response)
         if(response.data.result) {
           this.toastNotif(response.data.message);
           this.handleToggleView();
         } else {
           this.toastNotif(response.data.message);
         }
+        this.setState({
+          loading: false,
+        })
       })
       .catch(err => {
-        this.toastNotif('Oops this is embarassing, something went wrong!')
+        this.toastNotif('Oops this is embarassing, something went wrong!');
+        this.setState({
+          loading: false,
+        })
       })
     }
   }
 
   login = () => {
-    
+    if(this.state.username !== "" || this.state.password !== "") {
+      this.setState({
+        loading: true,
+      })
+      axios.post('http://localhost:3002/api/login', {
+        username: this.state.username,
+        password: this.state.password
+      })
+      .then(response => {
+        this.toastNotif(response.data.message);
+        console.log(response)
+        if(response.data.result) {
+          ls.set('userKey',response.data.token);
+          this.setState({
+            token: response.data.token,
+            loggedIn: true,
+          });
+        }
+        this.setState({
+          loading: false,
+        })
+      })
+      .catch(err => {
+        this.toastNotif('Oops this is embarassing, something went wrong!');
+        this.setState({
+          loading: false,
+        })
+      })
+    } else {
+      this.toastNotif('Naughty naughty!');
+    }
   }
 
   render() {
     const { classes } = this.props;
+
     const RealPage = () => {
-      return (
-        <div className={classes.back}>
-          <Box style={{
-            position:'relative',
-            top: '30px',
-          }}>
-            <Head
-              toggleView={this.state.toggleView} 
-              handleToggleView={this.handleToggleView}
-            />
-            {
-              this.state.toggleView ? (
-                <Login
-                  login={this.login}
-                  design={classes}
-                  handleUsername={this.handleUsername}
-                  handlePassword={this.handlePassword}
-                  username={this.state.username}
-                  password={this.state.password}
-                />
-              ) : (
-                <SignUp
-                  signUp={this.signUp}
-                  design={classes}
-                  handleUsername={this.handleUsername}
-                  handlePassword={this.handlePassword}
-                  handleConfirmPass={this.handleConfirmPass}
-                  username={this.state.username}
-                  password={this.state.password}
-                  confirmPass={this.state.confirmPass}
-                />
-              )
-            }
-          </Box>
+      return this.state.loading ? (
+        <div style={{
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          height: '300px',
+          alignItems: 'center'
+        }}>
+          <CircularProgress color="primary" />
         </div>
+      ) : (
+        <PageBox
+          toggleView={this.state.toggleView} 
+          handleToggleView={this.handleToggleView}
+          login={this.login}
+          signUp={this.signUp}
+          classes={classes}
+          handleUsername={this.handleUsername}
+          handlePassword={this.handlePassword}
+          handleConfirmPass={this.handleConfirmPass}
+          username={this.state.username}
+          password={this.state.password}
+          confirmPass={this.state.confirmPass}
+        />
       )
     }
+
     return (
       <HashRouter>
         <Switch>
-          <Route exact component={RealPage} path="/" />
+          <Route exact render={ this.state.loggedIn ? Main : RealPage } path="/" />
         </Switch>
       </HashRouter>
     );

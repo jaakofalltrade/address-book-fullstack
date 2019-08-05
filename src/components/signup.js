@@ -6,10 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
 export default class SignUp extends Component {
-    constructor() {
-        super();
-    }
-
+    
     render() {
         const { 
             design, 
@@ -30,6 +27,7 @@ export default class SignUp extends Component {
                             height: 'auto',
                             width: '50%'
                         }}
+                        alt="A generic alternate meaningful text."
                     />
                 </Box>
                 <Box className={design.formBox}>
