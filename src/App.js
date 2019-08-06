@@ -57,6 +57,9 @@ const styles = {
   textBuffer: {
     paddingBottom: '5px',
     width: '100%',
+  },
+  marginR: {
+    marginRight: '10px'
   }
 };
 
@@ -163,6 +166,7 @@ class App extends Component {
         console.log(response)
         if(response.data.result) {
           ls.set('userKey',response.data.token);
+          ls.set('userName',response.data.username);
           this.setState({
             token: response.data.token,
             loggedIn: true,
@@ -225,7 +229,8 @@ class App extends Component {
 
     const MainPage = () => {
       return (
-        <Main 
+        <Main
+          classes={classes}
           loggedIn={this.state.loggedIn}
           token={this.state.token}
           logout={this.logout}
