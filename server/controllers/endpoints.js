@@ -99,8 +99,8 @@ function createContact(req, res) {
 		country,
 		address_book: [
 			{
-				userId: user,
-				contactId: undefined
+				user_id: user,
+				contact_id: undefined
 			}
 		]
 	},
@@ -120,34 +120,17 @@ function createContact(req, res) {
 function getContacts(req, res) {
 	const db = req.app.get('db');
 	const { user } = req.params;
-	db.address_book.find({
-		userId: user
-	})
-	.then(result => {
-		if(result.length === 0) {
-			res.status(204).end();
+	db.query(`select * from address_book join contacts on contacts.id = address_book.contact_id where user_id = ${user}`)
+	.then(response => {
+		if(response.length > 0) {
+			res.status(200).json({response, message: "Contacts Queried!", result: true})
 		} else {
-			let count = 0;
-			let conts = [];
-			result.map(async (x) => {
-				await db.contacts.findOne({
-					id: x.contactId
-				})
-				.then((data) => {
-					count++;
-					conts.push(data);
-					if(count === result.length) {
-						console.log(`[+] Contacts: Successfully queried with user id: ${user}`)
-						res.status(200).json({conts, message: "Contacts Queried", result: true});
-					}
-				});
-			});
-			count = 0;
+			res.status(200).json({message: "Empty!", result: false})
 		}
 	})
 	.catch(err => {
 		console.log(err);
-		res.status(204).end();
+		res.status(500).end();
 	});
 
 }

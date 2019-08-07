@@ -8,8 +8,8 @@ import axios from 'axios';
 import * as ls from 'local-storage';
 
 export default class Main extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             menuHandle: false,
             anchorEl: null,
@@ -23,7 +23,7 @@ export default class Main extends Component {
             city: "",
             stateProvince: "",
             pCode: "",
-            country: "",
+            country: ""
         }
     }
 
@@ -47,41 +47,58 @@ export default class Main extends Component {
     }
 
     handleUpdate = (event) => {
-        if(event.target.name === 'pCode') {
-            console.log('test')
-            this.setState({
-                pCode: event.target.value.replace(/\+|-/ig, '')
-            })
-        } else {
-            this.setState({
-                [`${event.target.name}`]: event.target.value,
-            });
-        }     
+        this.setState({
+            [`${event.target.name}`]: event.target.value,
+        });
     }
 
     handleContact = (event) => {
         event.preventDefault();
-        axios.post({
-            fname: this.state.fName,
-            lname: this.state.lName,
-            home_phone: this.state.hPhone,
-            mobile_phone: this.state.mPhone,
-            work_phone: this.state.wPhone,
-            email: this.state.email,
-            city: this.state.city,
-            state_or_province: this.state.stateProvince
-        },
-        {
-            headers: {
-                Authorization: `Bearer ${ls.get('userKey')}`
-            }
-        }).then({
-
+        if((this.state.fName !== "")) {
+            axios.post(`http://localhost:3002/api/contact?user=${ls.get('userId')}`, {
+                fname: this.state.fName,
+                lname: this.state.lName,
+                home_phone: this.state.hPhone,
+                mobile_phone: this.state.mPhone,
+                work_phone: this.state.wPhone,
+                email: this.state.email,
+                city: this.state.city,
+                state_or_province: this.state.stateProvince,
+                postal_code: parseInt(this.state.pCode),
+                country: this.state.country
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${ls.get('userKey')}`
+                }
+            }).then(response => {
+                this.props.toastNotif(response.data.message)
+                console.log(response);
+            })
+            .catch(err => {
+                console.log(err);
+                this.props.toastNotif('Oops this is embarassing, something went wrong!');
+            });
+        } else {
+            this.props.toastNotif('Naughty naughty!');
+        }
+        this.setState({
+            dialogHandle: false,
+            fName: "",
+            lName: "",
+            hPhone: "",
+            mPhone: "",
+            wPhone: "",
+            email: "",
+            city: "",
+            stateProvince: "",
+            pCode: "",
+            country: ""
         })
     }
 
     render() {
-        const { classes, loggedIn, token, logout } = this.props;
+        const { classes, logout } = this.props;
         return (
             <div>
                 <MainHeader
@@ -89,6 +106,7 @@ export default class Main extends Component {
                     menuHandle={this.state.menuHandle}
                     onClose={this.handleClose}
                     handleMenu={this.handleMenu}
+                    handleClose={this.handleClose}
                     logout={logout}
                 />
                 <MainContainer

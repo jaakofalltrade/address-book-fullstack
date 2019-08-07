@@ -129,7 +129,7 @@ class App extends Component {
         loading: true,
       })
       axios.post('http://localhost:3002/api/user', {
-        username: this.state.username,
+        username: this.state.username.toLowerCase(),
         password: this.state.password
       })
       .then((response) => {
@@ -144,6 +144,7 @@ class App extends Component {
         })
       })
       .catch(err => {
+        console.log(err)
         this.toastNotif('Oops this is embarassing, something went wrong!');
         this.setState({
           loading: false,
@@ -158,7 +159,7 @@ class App extends Component {
         loading: true,
       })
       axios.post('http://localhost:3002/api/login', {
-        username: this.state.username,
+        username: this.state.username.toLowerCase(),
         password: this.state.password
       })
       .then(response => {
@@ -167,6 +168,7 @@ class App extends Component {
         if(response.data.result) {
           ls.set('userKey',response.data.token);
           ls.set('userName',response.data.username);
+          ls.set('userId', response.data.id);
           this.setState({
             token: response.data.token,
             loggedIn: true,
@@ -234,6 +236,7 @@ class App extends Component {
           loggedIn={this.state.loggedIn}
           token={this.state.token}
           logout={this.logout}
+          toastNotif={this.toastNotif}
         />
       )
     }

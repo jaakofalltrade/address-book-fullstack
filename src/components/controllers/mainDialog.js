@@ -37,7 +37,9 @@ export default class MainDialog extends Component {
             country
         } = this.props;
         return (
-            <Dialog 
+            <Dialog
+                scroll="body"
+                maxWidth="xs"
                 open={dialogHandle}
                 onClose={handleDialog}
             >
@@ -48,7 +50,9 @@ export default class MainDialog extends Component {
                             Not all fields are required.
                         </DialogContentText>
                         <TextField
+                            autoFocus
                             required
+                            fullWidth
                             label="First Name"
                             className={classes.marginR}
                             value={fName}
@@ -56,6 +60,7 @@ export default class MainDialog extends Component {
                             onChange={handleUpdate}
                         />
                         <TextField
+                            fullWidth
                             label="Last Name"
                             className={classes.marginR}
                             value={lName}
@@ -63,27 +68,32 @@ export default class MainDialog extends Component {
                             onChange={handleUpdate}
                         />
                         <TextField
+                            fullWidth
                             label="Home Phone"
                             className={classes.marginR}
-                            value={hPhone}
+                            value={hPhone.replace(/[^0-9]/g, '')}
                             name="hPhone"
                             onChange={handleUpdate}
                         />
                         <TextField
+                            fullWidth
                             label="Mobile Phone"
                             className={classes.marginR}
-                            value={mPhone}
+                            value={mPhone.replace(/[^0-9]/g, '')}
                             name="mPhone"
                             onChange={handleUpdate}
                         />
                         <TextField
+                            fullWidth
                             label="Work Phone"
                             className={classes.marginR}
-                            value={wPhone}
+                            value={wPhone.replace(/[^0-9]/g, '')}
                             name="wPhone"
                             onChange={handleUpdate}
                         />
                         <TextField
+                            fullWidth
+                            type="email"
                             label="Email"
                             className={classes.marginR}
                             value={email}
@@ -91,6 +101,7 @@ export default class MainDialog extends Component {
                             onChange={handleUpdate}
                         />
                         <TextField
+                            fullWidth
                             label="City"
                             className={classes.marginR}
                             value={city}
@@ -98,6 +109,7 @@ export default class MainDialog extends Component {
                             onChange={handleUpdate}
                         />
                         <TextField
+                            fullWidth
                             label="State or Province"
                             className={classes.marginR}
                             value={stateProvince}
@@ -105,18 +117,18 @@ export default class MainDialog extends Component {
                             onChange={handleUpdate}
                         />
                         <TextField
-                            label="Postal Code"
-                            className={classes.marginR}
-                            value={pCode}
-                            name="pCode"
-                            onChange={handleUpdate}
-                        />
-                        <TextField
-                            type="number"
+                            fullWidth
                             label="Country"
                             className={classes.marginR}
                             value={country}
                             name="country"
+                            onChange={handleUpdate}
+                        />
+                        <TextField
+                            label="Postal Code"
+                            className={classes.marginR}
+                            value={pCode.replace(/[^0-9]/g, '')}
+                            name="pCode"
                             onChange={handleUpdate}
                         />
                     </DialogContent>
