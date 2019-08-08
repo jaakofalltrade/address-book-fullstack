@@ -4,7 +4,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Toolbar, Container, Button } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
-import PermIdentity from '@material-ui/icons/PermIdentity';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 import IconButton from '@material-ui/core/IconButton';
 import Box from '@material-ui/core/Box';
 import logo from '../../images/logo.png';
@@ -36,6 +36,8 @@ export default class MainHeader extends Component {
         return (
             <AppBar position="static">
                 <Toolbar style={{
+                    width: '80%',
+                    margin: 'auto auto',
                     display: 'flex',
                     justifyContent: 'space-between'
                 }}>
@@ -51,14 +53,13 @@ export default class MainHeader extends Component {
                                 width: 'auto'
                             }}
                         />
-                        <h2>Address Book</h2>
                     </Box>
                     <div>
                         <Tooltip title="Menu">
                             <IconButton
                                 onClick={handleMenu}
                             >
-                                <PermIdentity style={{color: '#ffffff', fontSize: '30px'}} />
+                                <AccountCircle style={{color: '#ffffff', fontSize: '30px'}} />
                             </IconButton>
                         </Tooltip>
                         <Menu

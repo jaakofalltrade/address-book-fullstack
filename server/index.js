@@ -24,8 +24,9 @@ massive({
 	app.post('/api/user', endpoint.createUser);
 	app.post('/api/login', endpoint.login);
 	app.post('/api/contact', endpoint.createContact);
-	app.get('/api/contact/:contact', endpoint.getContactbyId)
+	app.get('/api/contact/:contact', endpoint.getContactbyId);
 	app.get('/api/contacts/:user', endpoint.getContacts);
+	app.delete('/api/contact/delete/:id', endpoint.deleteAddressBook);
 
 	app.get('/', function(req, res) {
 		res.status(200).send('<h1>Howdy!</h1>');

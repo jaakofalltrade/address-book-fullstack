@@ -164,7 +164,6 @@ class App extends Component {
       })
       .then(response => {
         this.toastNotif(response.data.message);
-        console.log(response)
         if(response.data.result) {
           ls.set('userKey',response.data.token);
           ls.set('userName',response.data.username);

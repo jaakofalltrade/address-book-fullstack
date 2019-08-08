@@ -139,6 +139,18 @@ function getAddressBook(req, res) {
 	console.log(`It works!`);
 }
 
+function deleteAddressBook(req, res) {
+	const db = req.app.get('db');
+	db.query(`delete from address_book where address_book.contact_id = ${req.params.id}`)
+	.then(response => {
+		console.log(response);
+		res.status(200).json({message: "Contact Deleted!", result: true})
+	}).catch(err => {
+		console.log(err);
+		res.status(500).end();
+	})
+}
+
 function getContactbyId(req, res) {
 	const db = req.app.get('db');
 	const { contact } = req.params;
@@ -182,5 +194,6 @@ module.exports = {
 	createContact,
 	getContacts,
 	getContactbyId,
-	getAddressBook
+	getAddressBook,
+	deleteAddressBook,
 }

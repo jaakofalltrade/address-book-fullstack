@@ -6,6 +6,7 @@ import MainContainer from './controllers/mainContainer';
 import MainDialog from './controllers/mainDialog';
 import axios from 'axios';
 import * as ls from 'local-storage';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export default class Main extends Component {
     constructor(props) {
@@ -23,8 +24,14 @@ export default class Main extends Component {
             city: "",
             stateProvince: "",
             pCode: "",
-            country: ""
+            country: "",
+            contacts: [],
+            isLoading: true,
         }
+    }
+
+    componentDidMount() {
+        this.updateContacts()
     }
 
     handleMenu = (event) => {
@@ -52,6 +59,22 @@ export default class Main extends Component {
         });
     }
 
+    updateContacts = () => {
+        console.log('is it repeating?')
+        axios.get(`http://localhost:3002/api/contacts/${ls.get('userId')}` ,
+        {
+            headers: {
+                Authorization: `Bearer ${ls.get('userKey')}`
+            }
+        })
+        .then(result => {
+            this.setState({
+                contacts: result.data.response,
+                isLoading: false
+            })
+        }).catch(err => console.log(err))
+    }
+
     handleContact = (event) => {
         event.preventDefault();
         if((this.state.fName !== "")) {
@@ -73,6 +96,7 @@ export default class Main extends Component {
                 }
             }).then(response => {
                 this.props.toastNotif(response.data.message)
+                this.updateContacts();
                 console.log(response);
             })
             .catch(err => {
@@ -99,6 +123,7 @@ export default class Main extends Component {
 
     render() {
         const { classes, logout } = this.props;
+
         return (
             <div>
                 <MainHeader
@@ -109,9 +134,24 @@ export default class Main extends Component {
                     handleClose={this.handleClose}
                     logout={logout}
                 />
-                <MainContainer
-                    handleDialog={this.handleDialog}
-                />
+                {this.state.isLoading ? (
+                    <div style={{
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        height: '300px',
+                        alignItems: 'center'
+                      }}>
+                        <CircularProgress color="primary" />
+                    </div>
+                ) : (
+                    <MainContainer
+                        updateContacts={this.updateContacts}
+                        toastNotif={this.props.toastNotif}
+                        handleDialog={this.handleDialog}
+                        contacts={this.state.contacts}
+                    />
+                )}
                 <MainDialog
                     handleContact={this.handleContact}
                     handleUpdate={this.handleUpdate}

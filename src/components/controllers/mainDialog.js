@@ -10,6 +10,14 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
+import Slide from '@material-ui/core/Slide';
+
+//import MediaQuery from 'react-responsive';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
+
 
 export default class MainDialog extends Component {
     constructor() {
@@ -38,6 +46,7 @@ export default class MainDialog extends Component {
         } = this.props;
         return (
             <Dialog
+                TransitionComponent={Transition}
                 scroll="body"
                 maxWidth="xs"
                 open={dialogHandle}
