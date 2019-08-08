@@ -17,6 +17,7 @@ import axios from 'axios';
 import * as ls from 'local-storage';
 import ToolbarComp from './mainContainer/toolbar';
 import DeleteDialog from './mainContainer/deleteDialog';
+import ViewDialog from './mainContainer/viewDialog';
 
 //import MediaQuery from 'react-responsive';
 
@@ -33,6 +34,8 @@ export default class MainContainer extends Component {
             fname: '',
             lname: '',
             contactId: '',
+            openDial: false,
+            contactData: []
         }
     }
 
@@ -80,6 +83,31 @@ export default class MainContainer extends Component {
         })
     }
 
+    openDialfunc = (id) => {
+        console.log('yeh')
+        axios.get(`http://localhost:3002/api/contact/${id}`, {
+            headers: {
+                Authorization: `Bearer ${ls.get('userKey')}`
+            }
+        })
+        .then(response => {
+            console.log(response)
+            if(response.data.result) {
+                this.setState({
+                    openDial: true,
+                    contactData: response.data.data
+                })
+            }
+        })
+    }
+
+    closeDial = () => {
+        this.setState({
+            openDial: false,
+            contactId: ""
+        })
+    }
+
     contactsShow = () => {
         if(this.props.contacts) {
             return this.props.contacts.map(x => (
@@ -119,7 +147,7 @@ export default class MainContainer extends Component {
                                         <Fab
                                             size="small"
                                         >
-                                            <Contacts />
+                                            <Contacts onClick={() => this.openDialfunc(x.id)}/>
                                         </Fab>
                                     </Tooltip>
                                 </ExpansionPanelDetails>
@@ -166,6 +194,12 @@ export default class MainContainer extends Component {
                     fname={this.state.fname}
                     lname={this.state.lname}
                     realDelete={this.realDelete}
+                />
+                <ViewDialog
+                    contactId={this.state.contactId}
+                    openDial={this.state.openDial}
+                    closeDial={this.closeDial}
+                    contactData={this.state.contactData}
                 />
             </React.Fragment>
         )
