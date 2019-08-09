@@ -27,11 +27,14 @@ export default class Main extends Component {
             country: "",
             contacts: [],
             isLoading: true,
+            search: "",
         }
     }
 
     componentDidMount() {
-        this.updateContacts()
+        if(ls.get('userId')) {
+            this.updateContacts()
+        }
     }
 
     handleMenu = (event) => {
@@ -53,15 +56,8 @@ export default class Main extends Component {
         })
     }
 
-    handleUpdate = (event) => {
-        this.setState({
-            [`${event.target.name}`]: event.target.value,
-        });
-    }
-
     updateContacts = () => {
-        console.log('is it repeating?')
-        axios.get(`http://localhost:3002/api/contacts/${ls.get('userId')}` ,
+        axios.get(`http://localhost:3002/api/contacts/?search=${this.state.search}&id=${ls.get('userId')}` ,
         {
             headers: {
                 Authorization: `Bearer ${ls.get('userKey')}`
@@ -69,10 +65,35 @@ export default class Main extends Component {
         })
         .then(result => {
             this.setState({
-                contacts: result.data.response,
+                contacts: result.data.data,
                 isLoading: false
             })
-        }).catch(err => console.log(err))
+        }).catch(err => {
+            console.log(err)
+            //this.updateContacts()
+        })
+    }
+
+    handleUpdate = (event) => {
+        this.setState({
+            [`${event.target.name}`]: event.target.value,
+        });
+        if(event.target.name === "search") {
+            axios.get(`http://localhost:3002/api/contacts/?search=${event.target.value}&id=${ls.get('userId')}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${ls.get('userKey')}`
+                }
+            })
+            .then(result => {
+                this.setState({
+                    contacts: result.data.data,
+                });
+            }).catch(err => {
+                console.log(err)
+                this.updateContacts()
+            })
+        }
     }
 
     handleContact = (event) => {
@@ -133,6 +154,7 @@ export default class Main extends Component {
                     handleMenu={this.handleMenu}
                     handleClose={this.handleClose}
                     logout={logout}
+                    handleDialog={this.handleDialog}
                 />
                 {this.state.isLoading ? (
                     <div style={{
@@ -146,6 +168,9 @@ export default class Main extends Component {
                     </div>
                 ) : (
                     <MainContainer
+                        updateContacts={this.updateContacts}
+                        handleUpdate={this.handleUpdate}
+                        search={this.state.search}
                         updateContacts={this.updateContacts}
                         toastNotif={this.props.toastNotif}
                         handleDialog={this.handleDialog}

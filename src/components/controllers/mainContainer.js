@@ -18,6 +18,7 @@ import * as ls from 'local-storage';
 import ToolbarComp from './mainContainer/toolbar';
 import DeleteDialog from './mainContainer/deleteDialog';
 import ViewDialog from './mainContainer/viewDialog';
+import EditDialog from './mainContainer/editDialog';
 
 //import MediaQuery from 'react-responsive';
 
@@ -35,7 +36,20 @@ export default class MainContainer extends Component {
             lname: '',
             contactId: '',
             openDial: false,
-            contactData: []
+            contactData: [],
+            delay: false,
+            openEdit: false,
+            idEdit: '',
+            fName: "",
+            lName: "",
+            hPhone: "0",
+            mPhone: "0",
+            wPhone: "0",
+            email: "",
+            city: "",
+            stateProvince: "",
+            pCode: "0",
+            country: "",
         }
     }
 
@@ -51,7 +65,6 @@ export default class MainContainer extends Component {
                 Authorization: `Bearer ${ls.get('userKey')}`
             }
         }).then(response => {
-            console.log(response)
             if(response.data.result) {
                 this.props.toastNotif(response.data.message);
                 this.deleteClose();
@@ -84,20 +97,23 @@ export default class MainContainer extends Component {
     }
 
     openDialfunc = (id) => {
-        console.log('yeh')
+        this.setState({delay: true})
         axios.get(`http://localhost:3002/api/contact/${id}`, {
             headers: {
                 Authorization: `Bearer ${ls.get('userKey')}`
             }
         })
         .then(response => {
-            console.log(response)
             if(response.data.result) {
                 this.setState({
                     openDial: true,
-                    contactData: response.data.data
+                    contactData: response.data.data,
+                    delay: false
                 })
             }
+        }).catch(err => {
+            console.log(err);
+            this.openDialfunc(id)
         })
     }
 
@@ -107,6 +123,48 @@ export default class MainContainer extends Component {
             contactId: ""
         })
     }
+
+    editHandle = (id) => {
+        if(this.state.openEdit) {
+            this.setState({
+                openEdit: false,
+            });
+        } else {
+            axios.get(`http://localhost:3002/api/contact/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${ls.get('userKey')}`
+                }
+            })
+            .then(response => {
+                if(response.data.result) {
+                    this.setState({
+                        openEdit: true,
+                        fName: response.data.data.fname,
+                        lName: response.data.data.lname,
+                        hPhone: response.data.data.home_phone,
+                        mPhone: response.data.data.mobile_phone,
+                        wPhone: response.data.data.work_phone,
+                        email: response.data.data.email,
+                        city: response.data.data.city,
+                        stateProvince: response.data.data.state_or_province,
+                        pCode: response.data.data.postal_code,
+                        country: response.data.data.country,
+                        idEdit: id,
+                    })
+                }
+            }).catch(err => {
+                console.log(err);
+                this.editHandle()
+            })
+        }
+    }
+
+    handleUpdate = (event) => {
+        this.setState({
+            [`${event.target.name}`]: event.target.value,
+        });
+    }
+
 
     contactsShow = () => {
         if(this.props.contacts) {
@@ -129,25 +187,29 @@ export default class MainContainer extends Component {
                                     justifyContent: 'space-evenly'
                                 }}>
                                     <Tooltip title="Delete Contact?">
-                                        <Fab
+                                        <Fab 
+                                            onClick={() => this.deleteContact(x.fname, x.lname, x.id)}
                                             size="small"
                                         >
-                                            <Delete onClick={() => this.deleteContact(x.fname, x.lname, x.id)}/>
+                                            <Delete />
                                         </Fab>
                                     </Tooltip>
-                                    <Tooltip title="Edit Contact.">
+                                    <Tooltip title="Edit Contact Information.">
                                         <Fab
+                                            onClick={() => this.editHandle(x.id)}
                                             size="small"
                                             color="secondary"
                                         >
                                             <Edit />
                                         </Fab>
                                     </Tooltip>
-                                    <Tooltip title="View Contact.">
+                                    <Tooltip title="View Contact Information.">
                                         <Fab
+                                            disabled={this.state.delay}
                                             size="small"
+                                            onClick={() => this.openDialfunc(x.id)}
                                         >
-                                            <Contacts onClick={() => this.openDialfunc(x.id)}/>
+                                            <Contacts />
                                         </Fab>
                                     </Tooltip>
                                 </ExpansionPanelDetails>
@@ -163,10 +225,9 @@ export default class MainContainer extends Component {
     }
 
     render() {
-        const { handleDialog } = this.props;
+        const { search, handleUpdate, updateContacts, toastNotif } = this.props;
         return (
             <React.Fragment>
-                {console.log('is it looping?')}
                 <Container
                     fixed
                     style={{
@@ -175,7 +236,9 @@ export default class MainContainer extends Component {
                         paddingBottom: '20px',
                 }}>
                     <ToolbarComp
-                        handleDialog={handleDialog}
+                        updateContacts={updateContacts}
+                        search={search}
+                        handleUpdate={handleUpdate}
                     />
                     <Typography variant="h6">Contact List:</Typography>
                     <Grid container spacing={1} style={{
@@ -200,6 +263,24 @@ export default class MainContainer extends Component {
                     openDial={this.state.openDial}
                     closeDial={this.closeDial}
                     contactData={this.state.contactData}
+                />
+                <EditDialog
+                    updateContacts={updateContacts}
+                    toastNotif={toastNotif}
+                    openEdit={this.state.openEdit}
+                    editHandle={this.editHandle}
+                    idEdit={this.state.idEdit}
+                    handleUpdate={this.handleUpdate}
+                    fName={this.state.fName}
+                    lName={this.state.lName}
+                    hPhone={this.state.hPhone}
+                    mPhone={this.state.mPhone}
+                    wPhone={this.state.wPhone}
+                    email={this.state.email}
+                    city={this.state.city}
+                    stateProvince={this.state.stateProvince}
+                    pCode={this.state.pCode}
+                    country={this.state.country}
                 />
             </React.Fragment>
         )

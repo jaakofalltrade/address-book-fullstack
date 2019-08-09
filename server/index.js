@@ -26,6 +26,8 @@ massive({
 	app.post('/api/contact', endpoint.createContact);
 	app.get('/api/contact/:contact', endpoint.getContactbyId);
 	app.get('/api/contacts/:user', endpoint.getContacts);
+	app.get('/api/contacts/', endpoint.getContactSearch);
+	app.patch('/api/contacts/:id', endpoint.editContacts);
 	app.delete('/api/contact/delete/:id', endpoint.deleteAddressBook);
 
 	app.get('/', function(req, res) {

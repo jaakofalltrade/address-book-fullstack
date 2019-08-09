@@ -141,11 +141,48 @@ function getAddressBook(req, res) {
 
 function deleteAddressBook(req, res) {
 	const db = req.app.get('db');
-	db.query(`delete from address_book where address_book.contact_id = ${req.params.id}`)
+	db.address_book.findOne({
+		id: req.params.id
+	})
+	.then(result => {
+		db.query(`delete from address_book where address_book.contact_id = ${req.params.id}`)
+		.then(response => {
+			res.status(200).json({message: "Contact Deleted!", result: true})
+		}).catch(err => {
+			console.log(err);
+			res.status(500).end();
+		});
+		db.query(`delete from contacts where contacts.id = ${result.contact_id}`)
+		.then(response => {
+			console.log(response);
+			res.status(200).json({message: "Contact Deleted!", result: true})
+		}).catch(err => {
+			console.log(err);
+			res.status(500).end();
+		})
+	}).catch(err => console.log(err))
+}
+
+function editContacts(req, res) {
+	const db = req.app.get('db');
+	const { id } = req.params;
+	const {
+		fname,
+		lname,
+		home_phone,
+		mobile_phone,
+		work_phone,
+		email,
+		city,
+		state_or_province,
+		postal_code,
+		country
+	} = req.body;
+	db.query(`update contacts set fname = '${fname}', lname = '${lname}', home_phone = '${home_phone}', mobile_phone = '${mobile_phone}', work_phone = '${work_phone}', email = '${email}', city = '${city}', state_or_province = '${state_or_province}', postal_code = '${postal_code}', country = '${country}' where contacts.id = '${id}'`)
 	.then(response => {
-		console.log(response);
-		res.status(200).json({message: "Contact Deleted!", result: true})
-	}).catch(err => {
+		res.status(200).json({message: "Contact Information Updated!", result: true})
+	})
+	.catch(err => {
 		console.log(err);
 		res.status(500).end();
 	})
@@ -164,8 +201,30 @@ function getContactbyId(req, res) {
 			res.status(200).json({data, message: "Contact Queried", result: true});
 		} else {
 			console.log(`[+] Contact: Failed Query with id: ${contact}`)
-			res.status(204).end()
+			res.status(204).end();
 		}
+	})
+}
+
+function getContactSearch(req, res) {
+	const db = req.app.get('db');
+	const { search, id } = req.query;
+	let queer;
+	if((search) && (search !== "")) {
+		queer = `select * from contacts, address_book where (UPPER(fname) LIKE UPPER('%${search}%') or UPPER(lname) LIKE UPPER('%${search}%')) and address_book.user_id = ${id} and address_book.contact_id = contacts.id`;
+	} else {
+		queer = `select * from address_book join contacts on contacts.id = address_book.contact_id where user_id = ${id}`;
+	}
+	db.query(queer)
+	.then(data => {
+		if(data) {
+			res.status(200).json({data, message: "Contact Searched", result: true})
+		} else {
+			res.status(200).json({message: "Nothing found!", result: false})
+		}
+	}).catch(err => {
+		console.log(err);
+		res.status(500).end();
 	})
 }
 
@@ -196,4 +255,6 @@ module.exports = {
 	getContactbyId,
 	getAddressBook,
 	deleteAddressBook,
+	getContactSearch,
+	editContacts
 }

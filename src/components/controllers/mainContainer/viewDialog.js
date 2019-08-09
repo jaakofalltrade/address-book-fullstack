@@ -6,9 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
-import axios from 'axios';
 import Typography from '@material-ui/core/Typography';
-import * as ls from 'local-storage';
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -34,16 +32,19 @@ export default class ViewDialog extends Component {
             >
                 <DialogTitle>{`${contactData.fname} ${contactData.lname}`}</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        <Typography>{`Home Phone: ${contactData.home_phone}`}</Typography>
-                        <Typography>{`Work Phone: ${contactData.work_phone}`}</Typography>
-                        <Typography>{`Mobile Phone: ${contactData.mobile_phone}`}</Typography>
-                        <Typography>{`Email: ${contactData.email}`}</Typography>
-                        <Typography>{`City: ${contactData.city}`}</Typography>
-                        <Typography>{`State/Province: ${contactData.state_or_province}`}</Typography>
-                        <Typography>{`Postal Code: ${contactData.postal_code}`}</Typography>
-                        <Typography>{`Country: ${contactData.country}`}</Typography>
-                    </DialogContentText>
+                    <Typography>{`Home Phone: ${contactData.home_phone}`}</Typography>
+                    <Typography>{`Work Phone: ${contactData.work_phone}`}</Typography>
+                    <Typography>{`Mobile Phone: ${contactData.mobile_phone}`}</Typography>
+                    <Typography>{`Email: ${contactData.email}`}</Typography>
+                    <Typography>{`City: ${contactData.city}`}</Typography>
+                    <Typography>{`State/Province: ${contactData.state_or_province}`}</Typography>
+                    <Typography>{`Postal Code: ${contactData.postal_code}`}</Typography>
+                    <Typography>{`Country: ${contactData.country}`}</Typography>
+                    <DialogActions>
+                        <Button onClick={closeDial}>
+                            Close
+                        </Button>
+                    </DialogActions>
                 </DialogContent>
             </Dialog>
         )

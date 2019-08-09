@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import { Toolbar, Container, Button } from '@material-ui/core';
+import { Toolbar } from '@material-ui/core';
 import Tooltip from '@material-ui/core/Tooltip';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import IconButton from '@material-ui/core/IconButton';
@@ -31,7 +31,8 @@ export default class MainHeader extends Component {
             menuHandle,
             logout,
             handleClose,
-            handleMenu
+            handleMenu,
+            handleDialog,
         } = this.props;
         return (
             <AppBar position="static">
@@ -68,7 +69,7 @@ export default class MainHeader extends Component {
                             open={Boolean(menuHandle)}
                             onClose={handleClose}
                         >
-                            <MenuItem onClick={() => handleClose()}>Profile</MenuItem>
+                            <MenuItem onClick={() => handleDialog()}>Add Contact</MenuItem>
                             <MenuItem onClick={() => logout()}>Logout</MenuItem>
                         </Menu>
                     </div>

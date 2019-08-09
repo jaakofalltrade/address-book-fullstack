@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-import { Toolbar, Container, Button } from '@material-ui/core';
-import Tooltip from '@material-ui/core/Tooltip';
-import Fab from '@material-ui/core/Fab';
-import Paper from '@material-ui/core/Paper';
-import Add from '@material-ui/icons/Add';
+import { Button } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -56,7 +52,7 @@ export default class MainDialog extends Component {
                 <form onSubmit={handleContact}>
                     <DialogContent>
                         <DialogContentText>
-                            Not all fields are required.
+                            First name is required.
                         </DialogContentText>
                         <TextField
                             autoFocus
