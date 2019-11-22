@@ -1,0 +1,56 @@
+{
+  "name": "address-book-fullstack",
+  "version": "0.1.0",
+  "description": "For this project you'll be crafting an Address Book application. You'll be responsible for the user interface and its functionality, along with implementing a backend API to persist the data to a database and authorize users.",
+  "main": "index.js",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^4.3.0",
+    "@material-ui/icons": "^4.2.1",
+    "@material-ui/styles": "^4.3.0",
+    "argon2": "^0.24.0",
+    "axios": "^0.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "local-storage": "^2.0.0",
+    "massive": "^5.11.2",
+    "node-pg-migrate": "^3.21.1",
+    "pg": "^7.12.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-responsive": "^7.0.0",
+    "react-router-dom": "^5.0.1",
+    "react-scripts": "3.0.1",
+    "react-toastify": "^5.3.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "migrate": "node-pg-migrate",
+    "api-server": "nodemon /server/index.js",
+    "dock:start": "docker-compose up -d db",
+    "dock:down": "docker-compose down"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaakofalltrade/address-book-fullstack.git"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
